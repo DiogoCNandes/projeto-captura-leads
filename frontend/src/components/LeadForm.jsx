@@ -33,8 +33,15 @@ const LeadForm = () => {
       setFormData({ nome: '', email: '', telefone: '' }); // Limpa os campos
     } catch (error) {
       // Deu erro!
+      // Se o status do erro for 409 (Conflito), que definimos no back-end...
+    if (error.response && error.response.status === 409) {
+      // ...mostramos como uma mensagem de 'informação', não de erro.
+      setFeedback({ message: error.response.data.message, type: 'info' });
+    } else {
+      // Para todos os outros erros, mostramos a mensagem de erro vermelha.
       const errorMessage = error.response?.data?.message || 'Erro ao conectar ao servidor. Tente novamente.';
       setFeedback({ message: errorMessage, type: 'error' });
+    }
     } finally {
       // Executa sempre, dando certo ou errado
       setIsLoading(false);
